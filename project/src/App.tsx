@@ -49,6 +49,18 @@ function App() {
     }
   };
 
+  const handleUpdateTodo = async (id: string, title: string, description: string) => {
+    try {
+      const updatedTodo = await todoService.updateTodo(id, {
+        title,
+        description
+      });
+      setTodos(prev => prev.map(t => t.id === id ? updatedTodo : t));
+    } catch (err) {
+      setError('Failed to update todo. Please try again.');
+    }
+  };
+
   const handleDeleteTodo = async (id: string) => {
     try {
       await todoService.deleteTodo(id);
@@ -86,6 +98,7 @@ function App() {
                 todo={todo}
                 onToggle={handleToggleTodo}
                 onDelete={handleDeleteTodo}
+                onUpdate={handleUpdateTodo}
               />
             ))
           )}

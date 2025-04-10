@@ -1,0 +1,10 @@
+/Users/adamyasingh/dev/levelup/backend/src/main/java/com/levelup/todo/service/TodoServiceImpl.java
+/Users/adamyasingh/dev/levelup/backend/src/main/java/com/levelup/todo/config/WebConfig.java
+/Users/adamyasingh/dev/levelup/backend/src/main/java/com/levelup/todo/controller/TodoController.java
+/Users/adamyasingh/dev/levelup/backend/src/main/java/com/levelup/todo/dto/CreateTodoDto.java
+/Users/adamyasingh/dev/levelup/backend/src/main/java/com/levelup/todo/service/TodoService.java
+/Users/adamyasingh/dev/levelup/backend/src/main/java/com/levelup/todo/TodoApplication.java
+/Users/adamyasingh/dev/levelup/backend/src/main/java/com/levelup/todo/model/Todo.java
+/Users/adamyasingh/dev/levelup/backend/src/main/java/com/levelup/todo/exception/GlobalExceptionHandler.java
+/Users/adamyasingh/dev/levelup/backend/src/main/java/com/levelup/todo/dto/UpdateTodoDto.java
+/Users/adamyasingh/dev/levelup/backend/src/main/java/com/levelup/todo/repository/TodoRepository.java
