@@ -54,7 +54,7 @@ project/
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/levelup.git
+git clone https://github.com/adamya-singh/levelup.git
 ```
 
 2. Start the backend server
