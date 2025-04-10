@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Trash2, Edit2, X } from 'lucide-react';
+import { Check, Trash2, Edit2, X, Clock, Calendar } from 'lucide-react';
 import { Todo } from '../types/todo';
 import { validateTitle, validateDescription, formatDate } from '../utils/validation';
 
@@ -16,6 +16,7 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
   const [editDescription, setEditDescription] = useState(todo.description);
   const [titleError, setTitleError] = useState<string | null>(null);
   const [descriptionError, setDescriptionError] = useState<string | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleSave = () => {
     const titleValidation = validateTitle(editTitle);
@@ -31,7 +32,13 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
   };
 
   return (
-    <div className="flex flex-col p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+    <div 
+      className={`flex flex-col p-4 bg-white rounded-lg shadow-sm border border-gray-200 transition-all duration-200 ${
+        isHovered ? 'shadow-md border-blue-100' : ''
+      }`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <button
@@ -53,7 +60,7 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
                   setEditTitle(e.target.value);
                   setTitleError(validateTitle(e.target.value));
                 }}
-                className={`w-full px-2 py-1 border rounded ${
+                className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                   titleError ? 'border-red-500' : 'border-gray-300'
                 }`}
               />
@@ -66,7 +73,7 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
                   setEditDescription(e.target.value);
                   setDescriptionError(validateDescription(e.target.value));
                 }}
-                className={`w-full px-2 py-1 border rounded ${
+                className={`w-full px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                   descriptionError ? 'border-red-500' : 'border-gray-300'
                 }`}
               />
@@ -92,6 +99,7 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
               <button
                 onClick={handleSave}
                 className="text-green-500 hover:text-green-600 transition-colors"
+                title="Save changes"
               >
                 <Check size={20} />
               </button>
@@ -104,6 +112,7 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
                   setDescriptionError(null);
                 }}
                 className="text-gray-400 hover:text-red-500 transition-colors"
+                title="Cancel editing"
               >
                 <X size={20} />
               </button>
@@ -113,12 +122,14 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
               <button
                 onClick={() => setIsEditing(true)}
                 className="text-gray-400 hover:text-blue-500 transition-colors"
+                title="Edit task"
               >
                 <Edit2 size={20} />
               </button>
               <button
                 onClick={() => onDelete(todo.id)}
                 className="text-gray-400 hover:text-red-500 transition-colors"
+                title="Delete task"
               >
                 <Trash2 size={20} />
               </button>
@@ -127,13 +138,19 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
         </div>
       </div>
 
-      <div className="mt-2 flex space-x-4 text-xs text-gray-500">
-        <span title={new Date(todo.createdAt).toLocaleString()}>
-          Created {formatDate(todo.createdAt)}
-        </span>
-        <span title={new Date(todo.updatedAt).toLocaleString()}>
-          Updated {formatDate(todo.updatedAt)}
-        </span>
+      <div className="mt-3 flex items-center space-x-4 text-xs text-gray-500">
+        <div className="flex items-center space-x-1">
+          <Calendar size={14} />
+          <span title={new Date(todo.createdAt).toLocaleString()}>
+            Created {formatDate(todo.createdAt)}
+          </span>
+        </div>
+        <div className="flex items-center space-x-1">
+          <Clock size={14} />
+          <span title={new Date(todo.updatedAt).toLocaleString()}>
+            Updated {formatDate(todo.updatedAt)}
+          </span>
+        </div>
       </div>
     </div>
   );

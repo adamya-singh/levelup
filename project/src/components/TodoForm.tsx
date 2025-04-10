@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, AlertCircle } from 'lucide-react';
 import { CreateTodoDto } from '../types/todo';
 import { validateTitle, validateDescription } from '../utils/validation';
 
@@ -12,8 +12,9 @@ export function TodoForm({ onSubmit }: TodoFormProps) {
   const [description, setDescription] = useState('');
   const [titleError, setTitleError] = useState<string | null>(null);
   const [descriptionError, setDescriptionError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     const titleValidation = validateTitle(title);
@@ -24,11 +25,16 @@ export function TodoForm({ onSubmit }: TodoFormProps) {
     
     if (titleValidation || descriptionValidation) return;
     
-    onSubmit({ title, description });
-    setTitle('');
-    setDescription('');
-    setTitleError(null);
-    setDescriptionError(null);
+    setIsSubmitting(true);
+    try {
+      await onSubmit({ title, description });
+      setTitle('');
+      setDescription('');
+      setTitleError(null);
+      setDescriptionError(null);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -43,14 +49,22 @@ export function TodoForm({ onSubmit }: TodoFormProps) {
               setTitleError(validateTitle(e.target.value));
             }}
             placeholder="What needs to be done?"
-            className={`w-full px-4 py-2 text-lg border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+            className={`w-full px-4 py-2 text-lg border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
               titleError ? 'border-red-500' : 'border-gray-300'
             }`}
+            disabled={isSubmitting}
           />
-          <span className="text-sm text-gray-500 ml-2">{title.length}/100</span>
+          <span className={`text-sm ml-2 ${
+            title.length > 90 ? 'text-red-500' : 'text-gray-500'
+          }`}>
+            {title.length}/100
+          </span>
         </div>
         {titleError && (
-          <p className="text-red-500 text-sm">{titleError}</p>
+          <div className="flex items-center space-x-1 text-red-500 text-sm">
+            <AlertCircle size={14} />
+            <p>{titleError}</p>
+          </div>
         )}
       </div>
 
@@ -63,23 +77,36 @@ export function TodoForm({ onSubmit }: TodoFormProps) {
               setDescriptionError(validateDescription(e.target.value));
             }}
             placeholder="Add a description (optional)"
-            className={`w-full px-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none h-20 ${
+            className={`w-full px-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none h-20 transition-colors ${
               descriptionError ? 'border-red-500' : 'border-gray-300'
             }`}
+            disabled={isSubmitting}
           />
-          <span className="text-sm text-gray-500 ml-2">{description.length}/500</span>
+          <span className={`text-sm ml-2 ${
+            description.length > 450 ? 'text-red-500' : 'text-gray-500'
+          }`}>
+            {description.length}/500
+          </span>
         </div>
         {descriptionError && (
-          <p className="text-red-500 text-sm">{descriptionError}</p>
+          <div className="flex items-center space-x-1 text-red-500 text-sm">
+            <AlertCircle size={14} />
+            <p>{descriptionError}</p>
+          </div>
         )}
       </div>
 
       <button
         type="submit"
-        className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center space-x-2"
+        disabled={isSubmitting}
+        className={`w-full bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-colors ${
+          isSubmitting
+            ? 'bg-blue-400 cursor-not-allowed'
+            : 'hover:bg-blue-600'
+        }`}
       >
         <Plus size={20} />
-        <span>Add Todo</span>
+        <span>{isSubmitting ? 'Adding Task...' : 'Add Task'}</span>
       </button>
     </form>
   );
